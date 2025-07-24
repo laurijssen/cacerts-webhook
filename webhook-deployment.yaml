@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cacerts-mutating-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cacerts-mutating-webhook
+  template:
+    metadata:
+      labels:
+        app: cacerts-mutating-webhook
+    spec:
+      imagePullSecrets:
+        - name: containerregistries-creds
+      containers:
+        - name: cacerts-mutating-webhook
+          image: ghcr.io/fujifilmimagingproductsandsolutions/cacertshook:1.0.0
+          args:
+          - /root/cacerts-webhook
+          - --port=8080
+          - --tls-key=/etc/opt/tls.key
+          - --tls-cert=/etc/opt/tls.crt
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: cert
+              mountPath: /etc/opt
+              readOnly: true
+      volumes:
+        - name: cert
+          secret:
+            secretName: cert-webhook
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: cacerts-mutating-webhook
+spec:
+  selector:
+    app: cacerts-mutating-webhook
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
