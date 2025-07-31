@@ -155,7 +155,12 @@ func mutatePod(w http.ResponseWriter, r *http.Request) {
 
 	admissionResponse.Allowed = true
 	admissionResponse.PatchType = &patchType
-	admissionResponse.Patch = []byte(patch)
+
+	fmt.Printf("processing pod %s/%s in namespace %s\n", pod.Name, pod.UID, pod.Namespace)
+
+	if pod.Namespace != "cattle-system" && pod.Namespace != "kube-system" {
+		admissionResponse.Patch = []byte(patch)
+	}
 
 	// Construct the response, which is just another AdmissionReview.
 	var admissionReviewResponse admissionv1.AdmissionReview
