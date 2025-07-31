@@ -125,7 +125,7 @@ func mutatePod(w http.ResponseWriter, r *http.Request) {
 		"image": "ubuntu",
 		"command": ["/bin/sh", "-c"],
 		"args": [
-			"update-ca-certificates && cp -r /etc/ssl/certs/* /certs-out/"
+			"apt-get update && apt-get install -y ca-certificates && apt-get update && update-ca-certificates && cp -r /etc/ssl/certs/* /certs-out/"
 		],
 		"volumeMounts": [
 			{
