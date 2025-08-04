@@ -53,7 +53,7 @@ Create the deployment with service for the webhook container. See webhook-deploy
 Most important fields are the image providing the code and volume cert-webhook that injects the key and certificate into the container
 
 ```
-      image: ghcr.io/fujifilmimagingproductsandsolutions/cacertshook:1.0.0
+      image: ghcr.io/laurijssen/cacertshook:1.0.0
 
       volumes:
         - name: cert
