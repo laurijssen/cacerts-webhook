@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	admissionv1 "k8s.io/api/admission/v1"
@@ -158,7 +159,15 @@ func mutatePod(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("processing pod %s in namespace %s\n", pod.Name, pod.Namespace)
 
-	if pod.Namespace != "cattle-system" && pod.Namespace != "kube-system" {
+	start_init_container := true
+
+	if enable_ca_certificates, ok := pod.ObjectMeta.Annotations["enable-ca-certificates-hook"]; ok {
+		start_init_container = enable_ca_certificates == "true"
+	}
+
+	fmt.Printf("enable-ca-certificates-hook annotation is %t\n", start_init_container)
+
+	if start_init_container && strings.HasPrefix(pod.Namespace, "cattle") && strings.HasPrefix(pod.Namespace, "kube") {
 		admissionResponse.Patch = []byte(patch)
 	}
 
