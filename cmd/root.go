@@ -167,7 +167,8 @@ func mutatePod(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("enable-ca-certificates-hook annotation is %t\n", start_init_container)
 
-	if start_init_container && !strings.HasPrefix(pod.Namespace, "cattle") && !strings.HasPrefix(pod.Namespace, "kube") {
+	// filter out namespaces with "system" in it. (kube-system, calico-system)
+	if start_init_container && !strings.Contains(pod.Namespace, "system") {
 		admissionResponse.Patch = []byte(patch)
 	}
 
