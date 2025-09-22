@@ -11,10 +11,10 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o cacerts-webhook
 
 FROM alpine:latest
 
-WORKDIR /root/
+WORKDIR /app
 
 COPY --from=builder /app/cacerts-webhook .
 
 EXPOSE 8080
 
-CMD ["./cacerts-webhook" ]
+CMD ["/app/cacerts-webhook" ]
