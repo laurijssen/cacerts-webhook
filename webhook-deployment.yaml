@@ -11,6 +11,8 @@ spec:
     metadata:
       labels:
         app: cacerts-mutating-webhook
+      annotations:
+        enable-ca-certificates-hook: "false"
     spec:
       imagePullSecrets:
         - name: containerregistries-creds
@@ -18,7 +20,7 @@ spec:
         - name: cacerts-mutating-webhook
           image: ghcr.io/fujifilmimagingproductsandsolutions/cacertshook:1.0.0
           args:
-          - /root/cacerts-webhook
+          - /app/cacerts-webhook
           - --port=8080
           - --tls-key=/etc/opt/tls.key
           - --tls-cert=/etc/opt/tls.crt
